@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock, paper, scissors</title>
+</head>
+<body>
+    <script>
+        const ROUNDS = 5;
+
+        const PLAYER_WIN = 1;
+        const TIE = 0;
+        const COMPUTER_WIN = -1;
+
+        function computerPlay() {
+            let n = Math.floor(Math.random() * 3);
+            return (n === 0 ? "ROCK" : 
+                    n === 1 ? "PAPER" :
+                    "SCISSORS");
+        }
+
+        function playerPlay() {
+            let playerSelection = "";
+            while (invalidPlayerSelection(playerSelection)) {
+                playerSelection = window.prompt("What is your play?").toUpperCase().trim();
+            }
+            return playerSelection;
+        }
+
+        function invalidPlayerSelection(playerSelection) {
+            return ["ROCK", "PAPER", "SCISSORS"].indexOf(playerSelection) < 0;
+        }
+
+        function getLoseElement(element) {
+            return (element === "ROCK" ? "PAPER" :
+                    element === "PAPER" ? "SCISSORS" : 
+                    "ROCK")
+        }
+
+        function checkRoundWinner(playerSelection, computerSelection) {
+            return (playerSelection === computerSelection ? TIE :
+                    computerSelection === getLoseElement(playerSelection) ? COMPUTER_WIN :
+                    PLAYER_WIN)                        
+        }
+
+        function game() {
+            let score = {player : 0, computer : 0}
+            
+            for (let r = 0; r < ROUNDS; r++) {
+                gameRound(score);                
+            }
+            
+            printGameResults(score);
+            checkReplayGame();
+        }
+
+        function gameRound(score) {
+            let playerSelection = playerPlay();
+            let computerSelection = computerPlay();
+            let roundWinner = checkRoundWinner(playerSelection, computerSelection);
+
+            updateScore(roundWinner, score);
+
+            printRoundResults(roundWinner, playerSelection, computerSelection);
+
+            console.log(`Score: You ${score.player} x Computer ${score.computer}`);
+        }
+
+        function updateScore(roundWinner, score) {
+            if (roundWinner === PLAYER_WIN) score.player++;
+            if (roundWinner === COMPUTER_WIN) score.computer++;
+        }
+
+        function printRoundResults(roundWinner, playerSelection, computerSelection) {
+            if (roundWinner === PLAYER_WIN) 
+                console.log(`You Win! ${playerSelection} beats ${computerSelection}.`);
+            if (roundWinner === COMPUTER_WIN) 
+                console.log(`You Lose! ${computerSelection} beats ${playerSelection}.`);
+            if (roundWinner === TIE) 
+                console.log(`It's a Tie! Both players have chosen ${playerSelection}.`);
+        }
+
+        function printGameResults(score) {
+            console.log(`The final score is: \r\n You ${score.player} x Computer ${score.computer}`);
+
+            if (score.player === score.computer) {
+                console.log("The game has ended in a Tie.");
+            } else if (score.player > score.computer) {
+                console.log("You have won! Congratulations!");
+            } else {
+                console.log("You have lost...");
+            }
+        }
+
+        function checkReplayGame() {
+            if (confirm("Do you want to play again?") === true) {
+                game();
+            }
+        }
+
+    </script>
+</body>
+</html>
