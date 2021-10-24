@@ -115,12 +115,12 @@
             <h2>Score</h2>
             <div class="row">
                 <div class="column2">
-                    <div class="card">
+                    <div>
                         Computer: 0
                     </div>
                 </div>
                 <div class="column2">
-                    <div class="card">
+                    <div>
                         Player: 0
                     </div>
                 </div>
@@ -129,10 +129,24 @@
     </div>
     <script>
         const ROUNDS = 5;
+        let ROUND = 1;
 
         const PLAYER_WIN = 1;
         const TIE = 0;
         const COMPUTER_WIN = -1;
+
+        let playerSelection = "";
+
+        let score = {player : 0, computer : 0}
+
+        document.querySelectorAll('.card').forEach((card) => {
+            card.addEventListener('click', playerPlay)
+        });
+        
+        function playerPlay(event) {
+            playerSelection =  event["path"][1].id;
+            game();
+        }
 
         function computerPlay() {
             let n = Math.floor(Math.random() * 3);
@@ -141,17 +155,17 @@
                     "SCISSORS");
         }
 
-        function playerPlay() {
-            let playerSelection = "";
-            while (invalidPlayerSelection(playerSelection)) {
-                playerSelection = window.prompt("What is your play?").toUpperCase().trim();
-            }
-            return playerSelection;
-        }
+        // function playerPlay() {
+        //     let playerSelection = "";
+        //     while (invalidPlayerSelection(playerSelection)) {
+        //         playerSelection = window.prompt("What is your play?").toUpperCase().trim();
+        //     }
+        //     return playerSelection;
+        // }
 
-        function invalidPlayerSelection(playerSelection) {
-            return ["ROCK", "PAPER", "SCISSORS"].indexOf(playerSelection) < 0;
-        }
+        // function invalidPlayerSelection(playerSelection) {
+        //     return ["ROCK", "PAPER", "SCISSORS"].indexOf(playerSelection) < 0;
+        // }
 
         function getLoseElement(element) {
             return (element === "ROCK" ? "PAPER" :
@@ -166,18 +180,19 @@
         }
 
         function game() {
-            let score = {player : 0, computer : 0}
             
-            for (let r = 0; r < ROUNDS; r++) {
-                gameRound(score);                
+            
+            if (ROUND <= ROUNDS) {
+                gameRound(score);
+                ROUND++;
+            } else {            
+                printGameResults(score);
+                checkReplayGame();
             }
-            
-            printGameResults(score);
-            checkReplayGame();
         }
 
         function gameRound(score) {
-            let playerSelection = playerPlay();
+            // let playerSelection = playerPlay();
             let computerSelection = computerPlay();
             let roundWinner = checkRoundWinner(playerSelection, computerSelection);
 
@@ -219,6 +234,8 @@
                 game();
             }
         }
+
+        // game();
 
     </script>
 </body>
